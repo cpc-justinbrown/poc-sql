@@ -1,11 +1,8 @@
-variable "name" {
-  type        = string
-  description = "name to greet"
-  default     = "World"
-}
-
-variable "environment" {
-  type        = string
-  description = "(required) The environment within which Terraform is expected to run"
-  default     = "sandbox"
+variable "tags" {
+  default = {
+    "Description" = "Digital Transformation Sandbox for BROWNJL"
+    "ManagedBy"   = "DT"
+    "Department"  = "Digital Transformation"
+    "CostCenter"  = "P3601"
+  }
 }
