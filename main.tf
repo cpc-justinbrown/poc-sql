@@ -14,7 +14,7 @@ resource "azurerm_mssql_server" "sql" {
   azuread_administrator {
     azuread_authentication_only = true
     login_username              = "AD-BROWNJL"
-    object_id                   = "268f5e47-eb76-485b-a9fb-59a68d444af3"
+    object_id                   = var.ad-brownjl_object_id
   }
 
   tags = var.tags
@@ -32,7 +32,6 @@ resource "azurerm_mssql_elasticpool" "sqlep" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   server_name         = azurerm_mssql_server.sql.name
-  license_type        = "LicenseIncluded"
   max_size_gb         = 4.8828125
 
   sku {
@@ -45,4 +44,38 @@ resource "azurerm_mssql_elasticpool" "sqlep" {
     min_capacity = 0
     max_capacity = 5
   }
+
+  tags = var.tags
+}
+
+resource "azurerm_mssql_database" "sqldb" {
+  name            = "sqldbCPCscus-BROWNJL"
+  server_id       = azurerm_mssql_server.sql.id
+  elastic_pool_id = azurerm_mssql_elasticpool.sqlep.id
+  max_size_gb     = 1
+  sku_name        = "ElasticPool"
+  storage_account_type = "Local"
+  zone_redundant = false
+
+  tags = var.tags
+}
+
+resource "azurerm_key_vault" "kv" {
+  name                        = "kvCPCscus-BROWNJL"
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  enable_rbac_authorization   = true
+  enabled_for_disk_encryption = true
+  tenant_id                   = var.tenant_id
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = true
+  sku_name                    = "standard"
+
+  tags = var.tags
+}
+
+resource "azurerm_role_assignment" "kvrbac" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = var.ad-brownjl_object_id
 }
