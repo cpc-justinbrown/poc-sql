@@ -18,3 +18,7 @@ variable "tags" {
 variable "ad-brownjl_object_id" {
   default = "268f5e47-eb76-485b-a9fb-59a68d444af3"
 }
+
+variable "cpchem_ip_address" {
+  default = "64.129.107.15"
+}

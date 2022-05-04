@@ -12,7 +12,7 @@ resource "azurerm_mssql_server" "sql" {
   minimum_tls_version = "1.2"
 
   azuread_administrator {
-    azuread_authentication_only = true
+    azuread_authentication_only = false
     login_username              = "AD-BROWNJL"
     object_id                   = var.ad-brownjl_object_id
   }
@@ -23,8 +23,8 @@ resource "azurerm_mssql_server" "sql" {
 resource "azurerm_mssql_firewall_rule" "sqlfw" {
   name             = "CPChem"
   server_id        = azurerm_mssql_server.sql.id
-  start_ip_address = "64.129.107.15"
-  end_ip_address   = "64.129.107.15"
+  start_ip_address = var.cpchem_ip_address
+  end_ip_address   = var.cpchem_ip_address
 }
 
 resource "azurerm_mssql_elasticpool" "sqlep" {
