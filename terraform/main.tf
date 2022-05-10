@@ -5,11 +5,13 @@ resource "azurerm_resource_group" "rg" {
 }
 
 resource "azurerm_mssql_server" "sql" {
-  name                = "sqlcpcscus-brownjl"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  version             = "12.0"
-  minimum_tls_version = "1.2"
+  name                         = "sqlcpcscus-brownjl"
+  resource_group_name          = azurerm_resource_group.rg.name
+  location                     = azurerm_resource_group.rg.location
+  version                      = "12.0"
+  minimum_tls_version          = "1.2"
+  administrator_login          = "sqladmCPCscus-BROWNJL"
+  administrator_login_password = "P@ssw0rd"
 
   azuread_administrator {
     azuread_authentication_only = false
@@ -49,13 +51,13 @@ resource "azurerm_mssql_elasticpool" "sqlep" {
 }
 
 resource "azurerm_mssql_database" "sqldb" {
-  name            = "sqldbCPCscus-BROWNJL"
-  server_id       = azurerm_mssql_server.sql.id
-  elastic_pool_id = azurerm_mssql_elasticpool.sqlep.id
-  max_size_gb     = 1
-  sku_name        = "ElasticPool"
+  name                 = "sqldbCPCscus-BROWNJL"
+  server_id            = azurerm_mssql_server.sql.id
+  elastic_pool_id      = azurerm_mssql_elasticpool.sqlep.id
+  max_size_gb          = 1
+  sku_name             = "ElasticPool"
   storage_account_type = "Local"
-  zone_redundant = false
+  zone_redundant       = false
 
   tags = var.tags
 }
